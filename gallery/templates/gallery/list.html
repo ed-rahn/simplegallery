@@ -6,7 +6,7 @@
     <h1>Images</h1>
     <ul>
         {% for image in object_list %}
-		<li>{{ image.hash }} Author: <a href="{% url authors-detail pk=image.author.pk %}">{{image.author.name}}</a></li>
+		<li><a href="{{image.pk}}">{{ image.hash }}</a> Author: <a href="{% url authors-detail pk=image.author.pk %}">{{image.author.name}}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}
