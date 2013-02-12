@@ -28,4 +28,4 @@ class Image(models.Model):
         """
         # TODO: complete this by browsing around Imgur for a bit and checking
         # what the URL pattern looks like
-        self.url = ""
+        self.url = "i.imgur.com/%s%s"%(self.hash, self.ext)
