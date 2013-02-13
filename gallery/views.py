@@ -11,3 +11,9 @@ class GalleryDetailView(DetailView):
 
 class GalleryByAuthorView(ListView):
     pass
+
+class GalleryByTitleView(ListView):
+    template_name = "gallery/list.html"
+
+    def get_queryset(self):
+        return Image.objects.filter(title__contains=self.request.GET['title'])

@@ -4,4 +4,11 @@
 
 {% block content %}
 <h1>{{object.name}}</h1>
+<ul>
+{% for image in image_list %}
+<li>{{image.title}}<br>
+<img src="http://{{image.url}}">
+</li>
+{%endfor%}
+</ul>
 {% endblock %}
