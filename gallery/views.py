@@ -1,8 +1,15 @@
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, View
 from django.core.cache import cache
+from django.shortcuts import get_object_or_404
 from django.http import Http404, HttpResponse
+
 from models import Image
+from settings import PROJECT_ROOT
+from gallery.tasks import download_image
+
 import json
+import os
+import urllib
 
 
 class GalleryView(ListView):
@@ -20,7 +27,6 @@ class GalleryView(ListView):
             return query 
         else:
             return None
-
 
     def get_queryset(self):
         query = self.get_query()
@@ -59,3 +65,17 @@ class GalleryByAuthorView(ListView):
 
     def get_queryset(self):
         return Image.objects.filter(author=self.kwargs['authorname'])
+
+class CachedImage(View):
+    def get(self, *args, **kwargs):
+        image = get_object_or_404(Image, pk=kwargs['pk'])
+        downloads = os.path.join(PROJECT_ROOT, 'images')
+
+        file_name = "%s/%s%s"%(downloads, image.hash, image.ext)
+        if os.path.exists(file_name):
+            f = open(file_name)
+        else:
+            download_image.delay(image)
+
+            f = urllib.urlopen(image.url)
+        return HttpResponse(f.read(), mimetype="image/jpg")
