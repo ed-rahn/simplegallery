@@ -5,7 +5,7 @@
 {% block content %}
 <h1>{{object.title}}</h1>
 <p>
-<img src="{{object.url}}">
+<img src="/gallery/image/{{object.pk}}/">
 </p>
 <a href="/gallery/byauthor/{{object.author.pk}}">{{object.author}}</a>
 {% endblock %}
