@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}Gallery{% endblock %}
+
+{% block content %}
+    <h1>Images</h1>
+    {% for image in object_list %}
+	    {{ image.hash }}</a> Author: <a href="{% url authors-detail pk=image.author.pk %}">{{image.author.name}}</a>
+    {% endfor %}
+{% endblock %}

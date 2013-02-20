@@ -22,19 +22,57 @@
 
 		Once you are done, you can proceed to the following section.
 	</p>
+
+	<hr />
+
 	<h2>Tasks</h2>
 	<ol>
 		<li>The first thing we want to do is make sure that when we import images, the importing mechanism
-		doesn't break if we find a duplicate author. To ensure that, modify Command.get_or_create_author to
+		doesn't break if we find a duplicate author. To ensure that, modify <code>Command.get_or_create_author</code> to
 		retrieve the existing record with the same name instead of creating a new one.</li>
-		<li>Next up, it would be handy if we could also build the URL to the image file hosted by Imgur and use it
-		to embed an image in our gallery details page later on. Modify the Image.build_url method to do so.</li>
-		<li>Now that we have the URL for the image, add the image to the detail page for images in the Gallery.</li>
+		<li>Next up, it would be handy if we could also build the URL for both the image and thumbnail files hosted by Imgur.
+		Modify the <code>Image.build_urls</code> method to do so. For an idea of what the URL patterns look like, browse around
+		Imgur and inspect both images and thumbnails with your favorite dev tools.</li>
+		<li>Now that we have the URL for the image, add the image to the detail page for images in the <a href="{% url gallery %}" target="_blank">Gallery</a>.</li>
+		<li>While we are at it, we might as well make the gallery look a bit better. Using simple CSS and HTML (nothing too fancy)
+		build an image grid similar to the one seen at <a href="http://imgur.com/" target="_blank">Imgur's frontpage</a></li>
 		<li>We know images have authors, and authors have images. Just like the images have a gallery, the authors
 		have their own <a href={% url authors %}>listing</a> and details pages. Can you add link all images
 		uplodaded by an author from his details page?</li>
-		<li>Using any kind of Django view (don't feel obliged to use the generic ListView class) implement the GalleryByAuthorView
-		class so that it displays the images created by a particular author</li>
-		<li><b>BONUS:</b> extend GalleryView to support searching for images based on the title of the image</li>
+		<li>Using any kind of Django view (don't feel obliged to use the generic <code>ListView</code> class) implement the 
+		<code>GalleryByAuthorView</code> class so that, when going to the URL <code>/gallery/byauthor/$PRIMARY_KEY/</code> it displays the images created by a particular author</li>
+		<li>Extend <code>GalleryView</code> to support searching for images based on the title of the image. We want
+		<code>/gallery/?query=cool</code> to return all images with the word 'cool' in their title.</li>
+		<li>Extend the gallery view to support caching of the search results on a per-term basis, using Django's builtin cache system</li>
+		<li>Extend the view even further to support returning the results of the search in the JSON format when passed the
+		<code>format=json</code> parameter, like so: <code>/gallery/?query=term&format=json</code></li>
+		<li>Hot-linking all those images is frowned upon in the web world. Nobody likes their servers getting hit to
+		make someone else money, right? So, wouldn't it be nicer if we could keep a copy of the image cached in our own server?
+		To do this implement the following:
+			<ol>
+				<li>Using Celery (it's preconfigured, check how to start the daemon <a href="#starting_celery">here</a>) write
+				a small task in the <code>gallery/tasks.py</code> file to asynchronously download an image into the project's
+				<code>PROJECT_ROOT/downloads</code> directory (read <a href="#project_root">here</a> on how to make this possible).
+			   	<strong>NOTE: </strong> we <em>strongly</em> suggest you use the <code>requests</code> library to avoid headaches.</li>
+				<li>Once you have the task in place, make sure that from now on the cached copy of the image is displayed on the
+				Image details page, and if there isn't a cached copy the task gets fired to download it.</li>
+			</ol>
+		</li>
 	</ol>
+
+	<hr />
+
+	<h3>Extra docs</h3>
+	<a name="starting_celery"><h4>Starting celery</h4></a>
+	<p>
+		To start the project's pre-configured celery daemon, run the following command:
+		<pre>python manage.py celery worker --loglevel=info</pre>
+	</p>
+
+	<a name="project_root"><h4>PROJECT_ROOT setting</h4></a>
+	<p>
+	For your convenience, the settings file provides a <code>PROJECT_ROOT</code> variable
+	that is pointed to the root of the project, so you can define your own directories inside
+	the project's directory by using <code>os.path.join(PROJECT_ROOT, 'some_name')</code>.
+	</p>
 {% endblock %}
