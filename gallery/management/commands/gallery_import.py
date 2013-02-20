@@ -18,8 +18,6 @@ class Command(NoArgsCommand):
         """
         # TODO: make sure that this method doesn't add repeated authors
         author, created = Author.objects.get_or_create(name=author_name)
-        if created:
-            author.save()
         return author
 
     def parse_datetime(self, text):
@@ -47,7 +45,7 @@ class Command(NoArgsCommand):
             # TODO: make sure all these methods are implemented correctly
             new.author = self.get_or_create_author(author_name)
             new.timestamp = self.parse_datetime(image_data['timestamp'])
-            new.build_url()
+            new.build_urls()
             new.save()
         else:
             print "Image %(hash)s didn't have an author" % image_data

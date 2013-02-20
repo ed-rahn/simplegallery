@@ -4,10 +4,6 @@
 
 {% block content %}
     <h1>Images</h1>
-    <form method="GET" action="/gallery/search-by-title">
-        Search by title: <input type="text" name="title">
-    </form>
-
     <ul>
         {% for image in object_list %}
 		<li><a href="{{image.pk}}">{{ image.hash }}</a> Author: <a href="{% url authors-detail pk=image.author.pk %}">{{image.author.name}}</a></li>
